@@ -2,6 +2,7 @@
 using NLog.Web;
 using System.IO;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MediaLibrary
 {
@@ -76,6 +77,13 @@ namespace MediaLibrary
             ulong newId = mf.GetNewID();
             Console.WriteLine("Enter movie title:");
             string title = Console.ReadLine();
+            //
+
+            if(FindDupeMovieByTitle(title)) { 
+                Console.WriteLine("That movie is already in the list!");
+                return;
+            }
+            //
             Console.WriteLine("Enter director:");
             string director = Console.ReadLine();
             Console.WriteLine("Enter genres | separated");
@@ -105,6 +113,15 @@ namespace MediaLibrary
             StreamWriter sw = new StreamWriter(ScrubbedFile,append:true);
             sw.WriteLine(fileLine);
             sw.Close();
+        }
+        private static bool FindDupeMovieByTitle(string title) {
+            //check every Movie.title for passed in title
+            //compare titles with ToLower()
+            if(mf.MovieList.ConvertAll(m => m.title.ToLower()).Contains(title.ToLower())) {
+                logger.Info($"found duplicate title {title}");
+                return true;
+            }
+            return false;
         }
     }
 }
