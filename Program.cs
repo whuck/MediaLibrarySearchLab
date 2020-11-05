@@ -58,6 +58,7 @@ namespace MediaLibrary
             while(choice != 0 ) {
                 Console.WriteLine("[1]Display All movies");
                 Console.WriteLine("[2]Add a movie");
+                Console.WriteLine("[3]Search for a movie");
                 Console.WriteLine("[0]Quit");
                 choice = Int16.Parse(Console.ReadLine());
                 switch (choice) {
@@ -66,6 +67,9 @@ namespace MediaLibrary
                         break;
                     case 2 : 
                         AddMovie();
+                        break;
+                    case 3 :
+                        SearchMovies();
                         break;
                     default : break;
                 }
@@ -122,6 +126,24 @@ namespace MediaLibrary
                 return true;
             }
             return false;
+        }
+        private static void SearchMovies() {
+            Console.WriteLine("Enter a title to search for:");
+            string title = Console.ReadLine();
+            //dont want to search for null or ""
+            if(title != null && title != "") {
+                //make a query
+                List<Movie> result = mf.MovieList
+                    .Where(m => m.title.Contains(title))
+                    .ToList<Movie>();
+                //loop through results and display returned movies
+                
+                foreach (Movie m in result)
+                {
+                    Console.WriteLine(m.Display());
+                }
+                Console.WriteLine($"found {result.Count()} movies with title containing \"{title}\"");
+            }
         }
     }
 }
